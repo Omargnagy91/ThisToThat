@@ -2,14 +2,14 @@ import { writable } from "svelte/store";
 import { createFFmpeg, FFmpeg } from "@ffmpeg/ffmpeg";
 
 // AppState indicates the current state of the conversion process.
-export enum AppState {
+export enum AppUserState {
   // The Input stage is where the user imports file(s) that will be converted.
   Input,
   // The Configuration stage is where the specifies how the files will be converted.
   Configuration,
   // The Output stage is where the user will be able to see the output of the conversion
   // and download the converted files.
-  OutputState,
+  Output,
 }
 
 // Define the initial application state.
@@ -17,28 +17,30 @@ export enum AppState {
 export interface ApplicationState {
   ffmpeg?: FFmpeg; // the ffmpeg module.
   ffmpegReady: boolean; // Flag indicating weather ffmpeg has loaded yet
-  appState: AppState; // app state
+  appState: AppUserState; // app state
+  UploadedFiles: File[]; // User uploaded files
 }
 
 const initalState : ApplicationState = {
   ffmpeg: undefined,
   ffmpegReady: false,
-  appState: AppState.Input
+  appState: AppUserState.Input,
+  UploadedFiles: []
 };
 
 // Creating custom store. Start at the Input state.
 const { subscribe, update, set } = writable(initalState);
 
-// incrementState and decrementState  
+// incrementState and decrementState change the application user state.
 var incrementState = () => {
   update((state: ApplicationState) => {
     switch(state.appState) {
-      case AppState.Input:
-        return {...state, appState: AppState.Configuration};
-      case AppState.Configuration:
-        return {...state, appState: AppState.Output};
-      case AppState.Output:
-        return {...state, appState: AppState.Output};
+      case AppUserState.Input:
+        return {...state, appState: AppUserState.Configuration};
+      case AppUserState.Configuration:
+        return {...state, appState: AppUserState.Output};
+      case AppUserState.Output:
+        return {...state, appState: AppUserState.Output};
       default:
         return state;
     }
@@ -48,12 +50,12 @@ var incrementState = () => {
 var decrementState = () => {
   update((state: ApplicationState) => {
     switch(state.appState) {
-      case AppState.Input:
-        return {...state, appState: AppState.Input};
-      case AppState.Configuration:
-        return {...state, appState: AppState.Input};
-      case AppState.Output:
-        return {...state, appState: AppState.Configuration};
+      case AppUserState.Input:
+        return {...state, appState: AppUserState.Input};
+      case AppUserState.Configuration:
+        return {...state, appState: AppUserState.Input};
+      case AppUserState.Output:
+        return {...state, appState: AppUserState.Configuration};
       default:
         return state;
     }
@@ -64,11 +66,22 @@ var resetApplicationState = () => {
   set(initalState);
 };
 
+var addUploadedFiles = (files: File[]) => {
+  update((state: ApplicationState) => {
+    const filteredFiles = files.filter((file: File) => {
+      // TODO: add support for other video types.
+      return file.type == "video/mp4";
+    });
+    return {...state, UploadedFiles: state.UploadedFiles.concat(filteredFiles)};
+  });
+};
+
 export const AppStateStore = {
   subscribe,
   incrementState,
   decrementState,
-  resetApplicationState
+  resetApplicationState,
+  addUploadedFiles
 };
 
 // load ffmpeg and update the application state.

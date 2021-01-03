@@ -1,11 +1,13 @@
 <script lang='typescript'>
-	import { onMount } from 'svelte';
-	import { AppState, AppStateStore } from "./app_state/app-state";
+	import type { ApplicationState, AppState } from "./app_state/app-state";
+	import { AppStateStore } from "./app_state/app-state";
 
 	let current_app_state: AppState;
+	let ffmpeg_ready: boolean;
 
-	const unsubscribe = AppStateStore.subscribe((state: AppState) => {
-		current_app_state = state;
+	const unsubscribe = AppStateStore.subscribe((state: ApplicationState) => {
+		current_app_state = state.appState;
+		ffmpeg_ready = state.ffmpegReady;
 	});
 </script>
   
@@ -63,7 +65,7 @@
 	<a class="App-link" href="https://svelte.dev" target="_blank" rel="noopener noreferrer">
 		Learn Svelte
 	</a>
-	The current_app_state is {current_app_state}
+	The current_app_state is {current_app_state}. Is ffmpeg ready? {ffmpeg_ready}
 	</p>
 </header>
 </div>

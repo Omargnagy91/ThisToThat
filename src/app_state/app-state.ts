@@ -1,7 +1,7 @@
 import { writable } from "svelte/store";
+import { createFFmpeg, FFmpeg } from "@ffmpeg/ffmpeg";
 
 // AppState indicates the current state of the conversion process.
-// There are three stages
 export enum AppState {
   // The Input stage is where the user imports file(s) that will be converted.
   Input,
@@ -12,47 +12,65 @@ export enum AppState {
   Output,
 }
 
+// Define the initial application state.
+// Using a interface here for typing.
+export interface ApplicationState {
+  ffmpeg?: FFmpeg; // the ffmpeg module.
+  ffmpegReady: boolean; // Flag indicating weather ffmpeg has loaded yet
+  appState: AppState; // app state
+}
+
+const initalState : ApplicationState = {
+  ffmpeg: undefined,
+  ffmpegReady: false,
+  appState: AppState.Input
+};
+
 // Creating custom store. Start at the Input state.
-const { subscribe, set, update } = writable(AppState.Input);
+const { subscribe, update } = writable(initalState);
 
-// increment, decrement and 
-var increment = () => {
-  update((n: AppState) => {
-    switch(n) {
-      case AppState.Input: 
-        return AppState.Configuration;
-      case AppState.Configuration: 
-        return AppState.Output;
-      case AppState.Output: 
-        return AppState.Output;
+// incrementState and decrementState  
+var incrementState = () => {
+  update((state: ApplicationState) => {
+    switch(state.appState) {
+      case AppState.Input:
+        return {...state, appState: AppState.Configuration};
+      case AppState.Configuration:
+        return {...state, appState: AppState.Output};
+      case AppState.Output:
+        return {...state, appState: AppState.Output};
       default:
-        return AppState.Input;
+        return state;
     }
   });
 };
 
-var decrement = (n: AppState) => {
-  update((n: AppState) => {
-    switch(n) {
-      case AppState.Input: 
-        return AppState.Input;
-      case AppState.Configuration: 
-        return AppState.Input;
-      case AppState.Output: 
-        return AppState.Configuration;
+var decrementState = () => {
+  update((state: ApplicationState) => {
+    switch(state.appState) {
+      case AppState.Input:
+        return {...state, appState: AppState.Input};
+      case AppState.Configuration:
+        return {...state, appState: AppState.Input};
+      case AppState.Output:
+        return {...state, appState: AppState.Configuration};
       default:
-        return AppState.Input;
+        return state;
     }
   });
-};
-
-var reset = () => {
-  set(AppState.Input);
 };
 
 export const AppStateStore = {
   subscribe,
-  increment,
-  decrement,
-  reset
-}
+  incrementState,
+  decrementState
+};
+
+// load ffmpeg and update the application state.
+const ffmpeg = createFFmpeg({log: true});
+ffmpeg.load()
+  .then(() => {
+    update((state: ApplicationState) => {
+      return {...state, ffmpeg: ffmpeg, ffmpegReady: true};
+    });
+  });

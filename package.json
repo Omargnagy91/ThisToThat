@@ -5,6 +5,8 @@
     "test": "web-test-runner \"src/**/*.test.ts\""
   },
   "dependencies": {
+    "@ffmpeg/core": "^0.8.5",
+    "@ffmpeg/ffmpeg": "^0.9.6",
     "svelte": "^3.24.0"
   },
   "devDependencies": {

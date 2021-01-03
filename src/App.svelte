@@ -1,15 +1,15 @@
 <script lang='typescript'>
-	import {onMount} from 'svelte';
-	let count: number = 0;
-	onMount(() => {
-	  const interval = setInterval(() => count++, 1000);
-	  return () => {
-		clearInterval(interval);
-	  };
+	import { onMount } from 'svelte';
+	import { AppState, AppStateStore } from "./app_state/app-state";
+
+	let current_app_state: AppState;
+
+	const unsubscribe = AppStateStore.subscribe((state: AppState) => {
+		current_app_state = state;
 	});
-  </script>
+</script>
   
-  <style>
+<style>
 	:global(body) {
 	  margin: 0;
 	  font-family: Arial, Helvetica, sans-serif;
@@ -53,18 +53,18 @@
 		transform: scale(1.06);
 	  }
 	}
-  </style>
+</style>
   
-  <div class="App">
-	<header class="App-header">
-	  <img src="/logo.svg" class="App-logo" alt="logo" />
-	  <p>Edit <code>src/App.svelte</code> and save to reload.</p>
-	  <p>Page has been open for <code>{count}</code> seconds.</p>
-	  <p>
-		<a class="App-link" href="https://svelte.dev" target="_blank" rel="noopener noreferrer">
-		  Learn Svelte
-		</a>
-	  </p>
-	</header>
-  </div>
+<div class="App">
+<header class="App-header">
+	<img src="/logo.svg" class="App-logo" alt="logo" />
+	<p>Edit <code>src/App.svelte</code> and save to reload.</p>
+	<p>
+	<a class="App-link" href="https://svelte.dev" target="_blank" rel="noopener noreferrer">
+		Learn Svelte
+	</a>
+	The current_app_state is {current_app_state}
+	</p>
+</header>
+</div>
   

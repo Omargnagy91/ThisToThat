@@ -9,7 +9,7 @@ export enum AppState {
   Configuration,
   // The Output stage is where the user will be able to see the output of the conversion
   // and download the converted files.
-  Output,
+  OutputState,
 }
 
 // Define the initial application state.
@@ -27,7 +27,7 @@ const initalState : ApplicationState = {
 };
 
 // Creating custom store. Start at the Input state.
-const { subscribe, update } = writable(initalState);
+const { subscribe, update, set } = writable(initalState);
 
 // incrementState and decrementState  
 var incrementState = () => {
@@ -60,10 +60,15 @@ var decrementState = () => {
   });
 };
 
+var resetApplicationState = () => {
+  set(initalState);
+};
+
 export const AppStateStore = {
   subscribe,
   incrementState,
-  decrementState
+  decrementState,
+  resetApplicationState
 };
 
 // load ffmpeg and update the application state.

@@ -1,10 +1,18 @@
 <script lang="ts">
   import type { ApplicationState } from "../../app_state/app-state";
+  import type { VideoFile } from "../../files/file";
   import { AppStateStore } from "../../app_state/app-state";
   import { onMount } from "svelte";
+  import { flip } from "svelte/animate";
+  import { scale } from "svelte/transition";
 
   let dropArea: HTMLDivElement;
   let fileButton: HTMLInputElement;
+  let files: VideoFile[];
+
+  const getRemoveFunction = (id: number) : () => void => {
+    return () => AppStateStore.removeUploadedFile(id);
+  }
 
   const handleDragOver = (event: DragEvent) => {
     event.stopPropagation();
@@ -17,11 +25,9 @@
   const handleDrop = (event: DragEvent) => {
     event.stopPropagation();
     event.preventDefault();
-    let fileList: File[];
     // TODO: add some error handling incase something bad happens.
     if (event.dataTransfer) {
-      fileList = [...event.dataTransfer.files];
-      AppStateStore.addUploadedFiles(fileList);
+      AppStateStore.addUploadedFiles([...event.dataTransfer.files]);
     }
   }
 
@@ -39,10 +45,11 @@
     dropArea.addEventListener("dragover", handleDragOver);
     dropArea.addEventListener("drop", handleDrop);
     fileButton.addEventListener("change", handleFileButtonChange);
+    fileButton.addEventListener("click", () => fileButton.value = null);
   });
 
   let unsubscribe = AppStateStore.subscribe((state: ApplicationState) => {
-    console.log(state.UploadedFiles);
+    files = state.UploadedFiles
   });
 </script>
 
@@ -63,7 +70,19 @@
       transform: scale(1.02);
     }
   }
+
+
+  #file-selector {
+    visibility: hidden;
+  }
 </style>
 
 <div id="drop-area" bind:this={dropArea}></div>
-<input type="file" id="file-selector" multiple bind:this={fileButton}>
+<input type="file" id="file-selector" multiple bind:this={fileButton} accept="video/*"/>
+<button on:click={() => fileButton.click()}>Upload File</button>
+{#each files as file (file.id)}
+  <div animate:flip in:scale>
+    <p>{file.fileName} [{file.fileSize}bytes]</p>
+    <button on:click={getRemoveFunction(file.id)}>X</button>
+  </div>
+{/each}

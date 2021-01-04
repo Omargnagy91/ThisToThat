@@ -25,10 +25,14 @@
 		<title>ThisToThat - Upload</title>
 	{/if}
 </svelte:head>
-  
+
 <div class="App">
-	{#if current_app_state == AppUserState.Input}
-		<UploadPage />
+	{#if ffmpeg_ready}
+		{#if current_app_state == AppUserState.Input}
+			<UploadPage />
+		{/if}
+	{:else}
+		<h1>FFMPEG IS LOADING...</h1>
 	{/if}
 </div>
   

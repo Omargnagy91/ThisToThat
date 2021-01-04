@@ -1,5 +1,6 @@
 import { writable } from "svelte/store";
 import { createFFmpeg, FFmpeg } from "@ffmpeg/ffmpeg";
+import { VideoFile } from "../files/file";
 
 // AppState indicates the current state of the conversion process.
 export enum AppUserState {
@@ -18,7 +19,7 @@ export interface ApplicationState {
   ffmpeg?: FFmpeg; // the ffmpeg module.
   ffmpegReady: boolean; // Flag indicating weather ffmpeg has loaded yet
   appState: AppUserState; // app state
-  UploadedFiles: File[]; // User uploaded files
+  UploadedFiles: VideoFile[]; // User uploaded files
 }
 
 const initalState : ApplicationState = {
@@ -71,8 +72,18 @@ var addUploadedFiles = (files: File[]) => {
     const filteredFiles = files.filter((file: File) => {
       // TODO: add support for other video types.
       return file.type == "video/mp4";
-    });
+    }).map((file: File) => new VideoFile(file));
     return {...state, UploadedFiles: state.UploadedFiles.concat(filteredFiles)};
+  });
+};
+
+var removeUploadedFile = (id: number) => {
+  update((state: ApplicationState) =>{
+    const filteredFiles = state.UploadedFiles
+      .filter((videoFile: VideoFile) => {
+        return videoFile.id != id;
+      });
+    return {...state, UploadedFiles: filteredFiles};
   });
 };
 
@@ -81,7 +92,8 @@ export const AppStateStore = {
   incrementState,
   decrementState,
   resetApplicationState,
-  addUploadedFiles
+  addUploadedFiles,
+  removeUploadedFile
 };
 
 // load ffmpeg and update the application state.

@@ -25,8 +25,6 @@
     });
 
     for (let index = 0; index < uploadedFiles.length; index++) {
-      console.log("HELLO ITTER")
-
       const video = uploadedFiles[index];
 
       // Add the video file to the ffmpeg file system.
@@ -50,7 +48,6 @@
 
   // Start Processing files when the component has mounted.
   onMount(() => {
-    console.log("HELLO")
     processUploadedFiles();
   });
 </script>

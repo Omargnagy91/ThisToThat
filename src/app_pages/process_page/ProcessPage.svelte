@@ -36,13 +36,16 @@
       // Retrive the output file.
       const data: Uint8Array = ffmpeg.FS('readFile', `${video.id}.${outputFormat}`);
 
-      const outputFile = new File([new Blob([data.buffer])], `${video.basename}.${outputFormat}`)
+      const outputFile = new File([new Blob([data.buffer])], `${video.basename}.${outputFormat}`,{
+        type: `video/${outputFormat}`,
+      });
 
       outputFiles = [...outputFiles, new VideoFile(outputFile)];
     }
 
     // TODO: Probably need to do some cleanup here.
     
+    AppStateStore.setOutputFiles(outputFiles);
     AppStateStore.incrementState();
   }
 

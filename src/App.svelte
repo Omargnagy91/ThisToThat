@@ -6,15 +6,17 @@
 	import ProcessPage from "./app_pages/process_page/ProcessPage.svelte";
 	import type { VideoFile } from "./files/file";
 	import type { FFmpeg } from "@ffmpeg/ffmpeg";
+	import OutputPage from "./app_pages/output_page/OutputPage.svelte";
 
 	let appState: AppUserState;
 	let ffmpegReady: boolean;
 	let outputFormat: string;
 	let uploadedFiles: VideoFile[];
 	let ffmpeg: FFmpeg;
+	let outputFiles: VideoFile[];
 
 	const unsubscribe = AppStateStore.subscribe((state: ApplicationState) => {
-		({appState, ffmpegReady, outputFormat, uploadedFiles, ffmpeg} = state);
+		({appState, ffmpegReady, outputFormat, uploadedFiles, ffmpeg, outputFiles} = state);
 	});
 </script>
   
@@ -47,7 +49,7 @@
 		{:else if appState == AppUserState.Process}
 			<ProcessPage {uploadedFiles} {ffmpeg} {outputFormat}/>
 		{:else if appState == AppUserState.Output}
-			<h1>YAY DONE PROCESSING! 😀</h1>
+			<OutputPage {outputFiles} />
 		{/if}
 	{:else}
 		<h1>FFMPEG IS LOADING...</h1>

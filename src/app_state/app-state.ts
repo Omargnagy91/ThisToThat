@@ -22,7 +22,8 @@ export interface ApplicationState {
   ffmpegReady: boolean; // Flag indicating weather ffmpeg has loaded yet
   appState: AppUserState; // app state
   uploadedFiles: VideoFile[]; // User uploaded files
-  outputFormat: string;
+  outputFiles: VideoFile[]; // Output files
+  outputFormat: string; // Output file format
 }
 
 const initalState : ApplicationState = {
@@ -30,7 +31,8 @@ const initalState : ApplicationState = {
   ffmpegReady: false,
   appState: AppUserState.Input,
   uploadedFiles: [],
-  outputFormat: "mp4"
+  outputFormat: "mp4",
+  outputFiles: []
 };
 
 // Creating custom store. Start at the Input state.
@@ -39,7 +41,7 @@ const { subscribe, update, set } = store;
 
 // incrementState and decrementState change the application user state.
 const incrementState = () => {
-  update((state: ApplicationState) => {
+  update((state: ApplicationState) : ApplicationState => {
     switch(state.appState) {
       case AppUserState.Input:
         return {...state, appState: AppUserState.Configuration};
@@ -56,7 +58,7 @@ const incrementState = () => {
 };
 
 const decrementState = () => {
-  update((state: ApplicationState) => {
+  update((state: ApplicationState) : ApplicationState => {
     switch(state.appState) {
       case AppUserState.Input:
         return {...state, appState: AppUserState.Input};
@@ -73,11 +75,17 @@ const decrementState = () => {
 };
 
 const resetApplicationState = () => {
-  set(initalState);
+  update((state: ApplicationState) : ApplicationState => {
+    // check if ffmpeg has been initalized.
+    if (state.ffmpegReady && state.ffmpeg) {
+      return {...initalState, ffmpegReady: state.ffmpegReady, ffmpeg: state.ffmpeg}
+    }
+    return initalState;
+  });
 };
 
 const addUploadedFiles = (files: File[]) => {
-  update((state: ApplicationState) => {
+  update((state: ApplicationState) : ApplicationState => {
     const filteredFiles = files.filter((file: File) => {
       // TODO: add support for other video types.
       return file.type == "video/mp4";
@@ -87,23 +95,25 @@ const addUploadedFiles = (files: File[]) => {
 };
 
 const removeUploadedFile = (id: number) => {
-  update((state: ApplicationState) => {
-    const filteredFiles = state.uploadedFiles
+  update((state: ApplicationState) : ApplicationState => {
+    const uploadedFiles = state.uploadedFiles
       .filter((videoFile: VideoFile) => {
         return videoFile.id != id;
       });
-    return {...state, uploadedFiles: filteredFiles};
+    return {...state, uploadedFiles};
   });
 };
 
-const setOutputFormat = (format: string) => {
-  update((state: ApplicationState) => {
-    return {...state, OutputFormat: format};
+const setOutputFormat = (outputFormat: string) => {
+  update((state: ApplicationState) : ApplicationState => {
+    return {...state, outputFormat};
   });
 };
 
-const getUploadedVideos = () => {
-  return get(store).uploadedFiles;
+const setOutputFiles = (outputFiles: VideoFile[]) => {
+  update((state: ApplicationState) : ApplicationState => {
+    return {...state, outputFiles}
+  })
 }
 
 export const AppStateStore = {
@@ -114,7 +124,7 @@ export const AppStateStore = {
   addUploadedFiles,
   removeUploadedFile,
   setOutputFormat,
-  getUploadedVideos
+  setOutputFiles
 };
 
 // load ffmpeg and update the application state.

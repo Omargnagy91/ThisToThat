@@ -1,11 +1,12 @@
 <script lang="ts">
   import { AppStateStore } from "../../app_state/app-state";
 
-  let format: string;
+  export let outputFormat: string;
 
   // Reactive statement that is triggered when the format changes
   $: {
-    AppStateStore.setOutputFormat(format);
+    AppStateStore.setOutputFormat(outputFormat);
+    console.log("change");
   }
 
   const proceedToOutput = () => {
@@ -19,7 +20,7 @@
 
 <h1>Configuration</h1>
 <p>Choose an output format:</p>
-<select bind:value={format} name="output format">
+<select bind:value={outputFormat} name="output format">
   <option value="mp4">.mp4</option>
   <option value="mov">.mov</option>
 </select>

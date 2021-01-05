@@ -3,13 +3,16 @@
 	import { AppStateStore, AppUserState } from "./app_state/app-state";
 	import UploadPage from "./app_pages/upload_page/UploadPage.svelte";
 	import ConfigurationPage from "./app_pages/configuration_page/ConfigurationPage.svelte";
+	import ProcessPage from "./app_pages/process_page/ProcessPage.svelte";
+	import type { VideoFile } from "./files/file";
 
-	let current_app_state: AppUserState;
-	let ffmpeg_ready: boolean;
+	let appState: AppUserState;
+	let ffmpegReady: boolean;
+	let outputFormat: string;
+	let uploadedFiles: VideoFile[];
 
 	const unsubscribe = AppStateStore.subscribe((state: ApplicationState) => {
-		current_app_state = state.appState;
-		ffmpeg_ready = state.ffmpegReady;
+		({appState, ffmpegReady, outputFormat, uploadedFiles} = state);
 	});
 </script>
   
@@ -22,17 +25,19 @@
 </style>
 
 <svelte:head>
-	{#if current_app_state == AppUserState.Input}
+	{#if appState == AppUserState.Input}
 		<title>ThisToThat - Upload</title>
 	{/if}
 </svelte:head>
 
 <div class="App">
-	{#if ffmpeg_ready}
-		{#if current_app_state == AppUserState.Input}
-			<UploadPage />
-		{:else if current_app_state == AppUserState.Configuration}
-			<ConfigurationPage />
+	{#if ffmpegReady}
+		{#if appState == AppUserState.Input}
+			<UploadPage {uploadedFiles}/>
+		{:else if appState == AppUserState.Configuration}
+			<ConfigurationPage {outputFormat}/>
+		{:else if appState == AppUserState.Process}
+			<ProcessPage {uploadedFiles}/>
 		{/if}
 	{:else}
 		<h1>FFMPEG IS LOADING...</h1>

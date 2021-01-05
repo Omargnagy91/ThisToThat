@@ -6,9 +6,10 @@
   import { flip } from "svelte/animate";
   import { scale } from "svelte/transition";
 
+  export let uploadedFiles: VideoFile[];
+
   let dropArea: HTMLDivElement;
   let fileButton: HTMLInputElement;
-  let files: VideoFile[];
 
   const getRemoveFunction = (id: number) : () => void => {
     return () => AppStateStore.removeUploadedFile(id);
@@ -48,10 +49,6 @@
     fileButton.addEventListener("click", () => fileButton.value = null);
   });
 
-  let unsubscribe = AppStateStore.subscribe((state: ApplicationState) => {
-    files = state.UploadedFiles
-  });
-
   const proceedToConfiguration = () => {
     AppStateStore.incrementState();
   }
@@ -84,12 +81,12 @@
 <div id="drop-area" bind:this={dropArea}></div>
 <input type="file" id="file-selector" multiple bind:this={fileButton} accept="video/*"/>
 <button on:click={() => fileButton.click()}>Upload File</button>
-{#each files as file (file.id)}
+{#each uploadedFiles as file (file.id)}
   <div animate:flip in:scale>
     <p>{file.fileName} [{file.fileSize}bytes]</p>
     <button on:click={getRemoveFunction(file.id)}>X</button>
   </div>
 {/each}
-{#if files.length}
+{#if uploadedFiles.length}
 <button on:click={proceedToConfiguration}>NEXT</button>
 {/if}

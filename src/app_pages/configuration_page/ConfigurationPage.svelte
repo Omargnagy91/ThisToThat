@@ -6,7 +6,6 @@
   // Reactive statement that is triggered when the format changes
   $: {
     AppStateStore.setOutputFormat(outputFormat);
-    console.log("change");
   }
 
   const proceedToOutput = () => {

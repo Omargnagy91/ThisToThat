@@ -10,6 +10,7 @@ export class VideoFile {
   private _file: File;
   private _id: number;
   private _fileUrl: string;
+  private _basename: string;
 
   constructor(file: File) {
     this._file = file;
@@ -18,6 +19,8 @@ export class VideoFile {
     update((id: number) => id + 1);
     
     this._fileUrl = URL.createObjectURL(this.file);
+
+    this._basename = file.name.replace(/\.[^/.]+$/, "");
   }
 
   get file(): File {
@@ -38,5 +41,9 @@ export class VideoFile {
 
   get fileSize(): number {
     return this._file.size;
+  }
+
+  get basename(): string {
+    return this._basename;
   }
 }

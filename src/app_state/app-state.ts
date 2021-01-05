@@ -20,20 +20,22 @@ export interface ApplicationState {
   ffmpegReady: boolean; // Flag indicating weather ffmpeg has loaded yet
   appState: AppUserState; // app state
   UploadedFiles: VideoFile[]; // User uploaded files
+  OutputFormat: string;
 }
 
 const initalState : ApplicationState = {
   ffmpeg: undefined,
   ffmpegReady: false,
   appState: AppUserState.Input,
-  UploadedFiles: []
+  UploadedFiles: [],
+  OutputFormat: "mp4"
 };
 
 // Creating custom store. Start at the Input state.
 const { subscribe, update, set } = writable(initalState);
 
 // incrementState and decrementState change the application user state.
-var incrementState = () => {
+const incrementState = () => {
   update((state: ApplicationState) => {
     switch(state.appState) {
       case AppUserState.Input:
@@ -48,7 +50,7 @@ var incrementState = () => {
   });
 };
 
-var decrementState = () => {
+const decrementState = () => {
   update((state: ApplicationState) => {
     switch(state.appState) {
       case AppUserState.Input:
@@ -63,11 +65,11 @@ var decrementState = () => {
   });
 };
 
-var resetApplicationState = () => {
+const resetApplicationState = () => {
   set(initalState);
 };
 
-var addUploadedFiles = (files: File[]) => {
+const addUploadedFiles = (files: File[]) => {
   update((state: ApplicationState) => {
     const filteredFiles = files.filter((file: File) => {
       // TODO: add support for other video types.
@@ -77,13 +79,19 @@ var addUploadedFiles = (files: File[]) => {
   });
 };
 
-var removeUploadedFile = (id: number) => {
-  update((state: ApplicationState) =>{
+const removeUploadedFile = (id: number) => {
+  update((state: ApplicationState) => {
     const filteredFiles = state.UploadedFiles
       .filter((videoFile: VideoFile) => {
         return videoFile.id != id;
       });
     return {...state, UploadedFiles: filteredFiles};
+  });
+};
+
+const setOutputFormat = (format: string) => {
+  update((state: ApplicationState) => {
+    return {...state, OutputFormat: format};
   });
 };
 
@@ -93,7 +101,8 @@ export const AppStateStore = {
   decrementState,
   resetApplicationState,
   addUploadedFiles,
-  removeUploadedFile
+  removeUploadedFile,
+  setOutputFormat
 };
 
 // load ffmpeg and update the application state.

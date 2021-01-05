@@ -2,6 +2,7 @@
 	import type { ApplicationState } from "./app_state/app-state";
 	import { AppStateStore, AppUserState } from "./app_state/app-state";
 	import UploadPage from "./app_pages/upload_page/UploadPage.svelte";
+	import ConfigurationPage from "./app_pages/configuration_page/ConfigurationPage.svelte";
 
 	let current_app_state: AppUserState;
 	let ffmpeg_ready: boolean;
@@ -30,6 +31,8 @@
 	{#if ffmpeg_ready}
 		{#if current_app_state == AppUserState.Input}
 			<UploadPage />
+		{:else if current_app_state == AppUserState.Configuration}
+			<ConfigurationPage />
 		{/if}
 	{:else}
 		<h1>FFMPEG IS LOADING...</h1>

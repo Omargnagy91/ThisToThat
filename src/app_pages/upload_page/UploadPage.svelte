@@ -51,6 +51,10 @@
   let unsubscribe = AppStateStore.subscribe((state: ApplicationState) => {
     files = state.UploadedFiles
   });
+
+  const proceedToConfiguration = () => {
+    AppStateStore.incrementState();
+  }
 </script>
 
 <style>
@@ -86,3 +90,6 @@
     <button on:click={getRemoveFunction(file.id)}>X</button>
   </div>
 {/each}
+{#if files.length}
+<button on:click={proceedToConfiguration}>NEXT</button>
+{/if}

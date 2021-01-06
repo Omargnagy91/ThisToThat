@@ -2,6 +2,7 @@
   import type { ApplicationState } from "../../app_state/app-state";
   import type { VideoFile } from "../../files/file";
   import { AppStateStore } from "../../app_state/app-state";
+  import UploadedFileComponent from "./UploadedFileComponent.svelte";
   import { onMount } from "svelte";
   import { flip } from "svelte/animate";
   import { scale } from "svelte/transition";
@@ -99,6 +100,7 @@
 </span>
 {#each uploadedFiles as file (file.id)}
   <div animate:flip in:scale>
+    <UploadedFileComponent videoFile={file}/>
     <p>{file.fileName} [{file.fileSize}bytes]</p>
     <button on:click={getRemoveFunction(file.id)}>X</button>
   </div>

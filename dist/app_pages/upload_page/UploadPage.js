@@ -37,7 +37,7 @@ function get_each_context(ctx, list, i) {
 	return child_ctx;
 }
 
-// (75:0) {#each uploadedFiles as file (file.id)}
+// (91:0) {#each uploadedFiles as file (file.id)}
 function create_each_block(key_1, ctx) {
 	let div;
 	let p;
@@ -121,7 +121,7 @@ function create_each_block(key_1, ctx) {
 	};
 }
 
-// (81:0) {#if uploadedFiles.length}
+// (97:0) {#if uploadedFiles.length}
 function create_if_block(ctx) {
 	let button;
 	let mounted;
@@ -154,11 +154,13 @@ function create_fragment(ctx) {
 	let t0;
 	let input;
 	let t1;
+	let span;
+	let t2;
 	let button;
-	let t3;
+	let t4;
 	let each_blocks = [];
 	let each_1_lookup = new Map();
-	let t4;
+	let t5;
 	let if_block_anchor;
 	let mounted;
 	let dispose;
@@ -179,24 +181,28 @@ function create_fragment(ctx) {
 			t0 = space();
 			input = element("input");
 			t1 = space();
+			span = element("span");
+			t2 = text("Or\n  ");
 			button = element("button");
-			button.textContent = "Upload File";
-			t3 = space();
+			button.textContent = "click here to upload files.";
+			t4 = space();
 
 			for (let i = 0; i < each_blocks.length; i += 1) {
 				each_blocks[i].c();
 			}
 
-			t4 = space();
+			t5 = space();
 			if (if_block) if_block.c();
 			if_block_anchor = empty();
 			attr(div, "id", "drop-area");
-			attr(div, "class", "svelte-1dca7ua");
+			attr(div, "class", "svelte-1shw3uz");
 			attr(input, "type", "file");
 			attr(input, "id", "file-selector");
 			input.multiple = true;
 			attr(input, "accept", "video/*");
-			attr(input, "class", "svelte-1dca7ua");
+			attr(input, "class", "svelte-1shw3uz");
+			attr(button, "id", "file-button");
+			attr(button, "class", "svelte-1shw3uz");
 		},
 		m(target, anchor) {
 			insert(target, div, anchor);
@@ -205,14 +211,16 @@ function create_fragment(ctx) {
 			insert(target, input, anchor);
 			/*input_binding*/ ctx[6](input);
 			insert(target, t1, anchor);
-			insert(target, button, anchor);
-			insert(target, t3, anchor);
+			insert(target, span, anchor);
+			append(span, t2);
+			append(span, button);
+			insert(target, t4, anchor);
 
 			for (let i = 0; i < each_blocks.length; i += 1) {
 				each_blocks[i].m(target, anchor);
 			}
 
-			insert(target, t4, anchor);
+			insert(target, t5, anchor);
 			if (if_block) if_block.m(target, anchor);
 			insert(target, if_block_anchor, anchor);
 
@@ -225,7 +233,7 @@ function create_fragment(ctx) {
 			if (dirty & /*getRemoveFunction, uploadedFiles*/ 9) {
 				each_value = /*uploadedFiles*/ ctx[0];
 				for (let i = 0; i < each_blocks.length; i += 1) each_blocks[i].r();
-				each_blocks = update_keyed_each(each_blocks, dirty, get_key, 1, ctx, each_value, each_1_lookup, t4.parentNode, fix_and_destroy_block, create_each_block, t4, get_each_context);
+				each_blocks = update_keyed_each(each_blocks, dirty, get_key, 1, ctx, each_value, each_1_lookup, t5.parentNode, fix_and_destroy_block, create_each_block, t5, get_each_context);
 				for (let i = 0; i < each_blocks.length; i += 1) each_blocks[i].a();
 			}
 
@@ -255,14 +263,14 @@ function create_fragment(ctx) {
 			if (detaching) detach(input);
 			/*input_binding*/ ctx[6](null);
 			if (detaching) detach(t1);
-			if (detaching) detach(button);
-			if (detaching) detach(t3);
+			if (detaching) detach(span);
+			if (detaching) detach(t4);
 
 			for (let i = 0; i < each_blocks.length; i += 1) {
 				each_blocks[i].d(detaching);
 			}
 
-			if (detaching) detach(t4);
+			if (detaching) detach(t5);
 			if (if_block) if_block.d(detaching);
 			if (detaching) detach(if_block_anchor);
 			mounted = false;

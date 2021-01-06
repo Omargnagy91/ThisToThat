@@ -76,11 +76,27 @@
   #file-selector {
     visibility: hidden;
   }
+
+  #file-button {
+    font-family: inherit;
+    font-size: inherit;
+    border: none;
+    background: none;
+    cursor: pointer;
+    transition: .2s ease-in-out;
+  }
+
+  #file-button:hover {
+    color: #F22B29;
+  }
 </style>
 
 <div id="drop-area" bind:this={dropArea}></div>
 <input type="file" id="file-selector" multiple bind:this={fileButton} accept="video/*"/>
-<button on:click={() => fileButton.click()}>Upload File</button>
+<span>
+  Or
+  <button id="file-button" on:click={() => fileButton.click()}>click here to upload files.</button>
+</span>
 {#each uploadedFiles as file (file.id)}
   <div animate:flip in:scale>
     <p>{file.fileName} [{file.fileSize}bytes]</p>

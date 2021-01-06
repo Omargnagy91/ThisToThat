@@ -266,6 +266,20 @@ function get_current_component() {
 function onMount(fn) {
     get_current_component().$$.on_mount.push(fn);
 }
+function createEventDispatcher() {
+    const component = get_current_component();
+    return (type, detail) => {
+        const callbacks = component.$$.callbacks[type];
+        if (callbacks) {
+            // TODO are there situations where events could be dispatched
+            // in a server (non-DOM) environment?
+            const event = custom_event(type, detail);
+            callbacks.slice().forEach(fn => {
+                fn.call(component, event);
+            });
+        }
+    };
+}
 
 const dirty_components = [];
 const binding_callbacks = [];
@@ -449,9 +463,14 @@ function destroy_block(block, lookup) {
     block.d(1);
     lookup.delete(block.key);
 }
-function fix_and_destroy_block(block, lookup) {
+function outro_and_destroy_block(block, lookup) {
+    transition_out(block, 1, 1, () => {
+        lookup.delete(block.key);
+    });
+}
+function fix_and_outro_and_destroy_block(block, lookup) {
     block.f();
-    destroy_block(block, lookup);
+    outro_and_destroy_block(block, lookup);
 }
 function update_keyed_each(old_blocks, dirty, get_key, dynamic, ctx, list, lookup, node, destroy, create_each_block, next, get_context) {
     let o = old_blocks.length;
@@ -653,4 +672,4 @@ class SvelteComponent {
     }
 }
 
-export { transition_in as A, check_outros as B, create_component as C, destroy_component as D, group_outros as E, mount_component as F, transition_out as G, get_store_value as H, SvelteComponent as S, add_render_callback as a, append as b, attr as c, detach as d, element as e, init as f, insert as g, select_option as h, is_function as i, select_value as j, space as k, listen as l, destroy_block as m, noop as n, onMount as o, set_data as p, binding_callbacks as q, run_all as r, safe_not_equal as s, text as t, update_keyed_each as u, create_animation as v, create_in_transition as w, empty as x, fix_and_destroy_block as y, fix_position as z };
+export { destroy_component as A, empty as B, fix_and_outro_and_destroy_block as C, fix_position as D, group_outros as E, mount_component as F, transition_in as G, transition_out as H, get_store_value as I, SvelteComponent as S, add_render_callback as a, append as b, createEventDispatcher as c, attr as d, detach as e, element as f, init as g, insert as h, is_function as i, select_option as j, select_value as k, listen as l, space as m, noop as n, onMount as o, destroy_block as p, set_data as q, run_all as r, safe_not_equal as s, text as t, update_keyed_each as u, binding_callbacks as v, check_outros as w, create_animation as x, create_component as y, create_in_transition as z };

@@ -6,27 +6,34 @@ import {
 	append,
 	attr,
 	binding_callbacks,
+	check_outros,
 	create_animation,
+	create_component,
 	create_in_transition,
+	destroy_component,
 	detach,
 	element,
 	empty,
-	fix_and_destroy_block,
+	fix_and_outro_and_destroy_block,
 	fix_position,
+	group_outros,
 	init,
 	insert,
 	is_function,
 	listen,
+	mount_component,
 	noop,
 	safe_not_equal,
 	set_data,
 	space,
 	text,
 	transition_in,
+	transition_out,
 	update_keyed_each
 } from "../../../web_modules/svelte/internal.js";
 
 import { AppStateStore } from "../../app_state/app-state.js";
+import UploadedFileComponent from "./UploadedFileComponent.js";
 import { onMount } from "../../../web_modules/svelte.js";
 import { flip } from "../../../web_modules/svelte/animate.js";
 import { scale } from "../../../web_modules/svelte/transition.js";
@@ -37,48 +44,57 @@ function get_each_context(ctx, list, i) {
 	return child_ctx;
 }
 
-// (91:0) {#each uploadedFiles as file (file.id)}
+// (92:0) {#each uploadedFiles as file (file.id)}
 function create_each_block(key_1, ctx) {
 	let div;
-	let p;
-	let t0_value = /*file*/ ctx[11].fileName + "";
+	let uploadedfilecomponent;
 	let t0;
+	let p;
+	let t1_value = /*file*/ ctx[11].fileName + "";
 	let t1;
-	let t2_value = /*file*/ ctx[11].fileSize + "";
 	let t2;
+	let t3_value = /*file*/ ctx[11].fileSize + "";
 	let t3;
 	let t4;
+	let t5;
 	let button;
 	let div_intro;
 	let rect;
 	let stop_animation = noop;
+	let current;
 	let mounted;
 	let dispose;
+	uploadedfilecomponent = new UploadedFileComponent({ props: { videoFile: /*file*/ ctx[11] } });
 
 	return {
 		key: key_1,
 		first: null,
 		c() {
 			div = element("div");
+			create_component(uploadedfilecomponent.$$.fragment);
+			t0 = space();
 			p = element("p");
-			t0 = text(t0_value);
-			t1 = text(" [");
-			t2 = text(t2_value);
-			t3 = text("bytes]");
-			t4 = space();
+			t1 = text(t1_value);
+			t2 = text(" [");
+			t3 = text(t3_value);
+			t4 = text("bytes]");
+			t5 = space();
 			button = element("button");
 			button.textContent = "X";
 			this.first = div;
 		},
 		m(target, anchor) {
 			insert(target, div, anchor);
+			mount_component(uploadedfilecomponent, div, null);
+			append(div, t0);
 			append(div, p);
-			append(p, t0);
 			append(p, t1);
 			append(p, t2);
 			append(p, t3);
-			append(div, t4);
+			append(p, t4);
+			append(div, t5);
 			append(div, button);
+			current = true;
 
 			if (!mounted) {
 				dispose = listen(button, "click", function () {
@@ -90,8 +106,11 @@ function create_each_block(key_1, ctx) {
 		},
 		p(new_ctx, dirty) {
 			ctx = new_ctx;
-			if (dirty & /*uploadedFiles*/ 1 && t0_value !== (t0_value = /*file*/ ctx[11].fileName + "")) set_data(t0, t0_value);
-			if (dirty & /*uploadedFiles*/ 1 && t2_value !== (t2_value = /*file*/ ctx[11].fileSize + "")) set_data(t2, t2_value);
+			const uploadedfilecomponent_changes = {};
+			if (dirty & /*uploadedFiles*/ 1) uploadedfilecomponent_changes.videoFile = /*file*/ ctx[11];
+			uploadedfilecomponent.$set(uploadedfilecomponent_changes);
+			if ((!current || dirty & /*uploadedFiles*/ 1) && t1_value !== (t1_value = /*file*/ ctx[11].fileName + "")) set_data(t1, t1_value);
+			if ((!current || dirty & /*uploadedFiles*/ 1) && t3_value !== (t3_value = /*file*/ ctx[11].fileSize + "")) set_data(t3, t3_value);
 		},
 		r() {
 			rect = div.getBoundingClientRect();
@@ -105,23 +124,32 @@ function create_each_block(key_1, ctx) {
 			stop_animation = create_animation(div, rect, flip, {});
 		},
 		i(local) {
+			if (current) return;
+			transition_in(uploadedfilecomponent.$$.fragment, local);
+
 			if (!div_intro) {
 				add_render_callback(() => {
 					div_intro = create_in_transition(div, scale, {});
 					div_intro.start();
 				});
 			}
+
+			current = true;
 		},
-		o: noop,
+		o(local) {
+			transition_out(uploadedfilecomponent.$$.fragment, local);
+			current = false;
+		},
 		d(detaching) {
 			if (detaching) detach(div);
+			destroy_component(uploadedfilecomponent);
 			mounted = false;
 			dispose();
 		}
 	};
 }
 
-// (97:0) {#if uploadedFiles.length}
+// (99:0) {#if uploadedFiles.length}
 function create_if_block(ctx) {
 	let button;
 	let mounted;
@@ -162,6 +190,7 @@ function create_fragment(ctx) {
 	let each_1_lookup = new Map();
 	let t5;
 	let if_block_anchor;
+	let current;
 	let mounted;
 	let dispose;
 	let each_value = /*uploadedFiles*/ ctx[0];
@@ -223,6 +252,7 @@ function create_fragment(ctx) {
 			insert(target, t5, anchor);
 			if (if_block) if_block.m(target, anchor);
 			insert(target, if_block_anchor, anchor);
+			current = true;
 
 			if (!mounted) {
 				dispose = listen(button, "click", /*click_handler*/ ctx[7]);
@@ -232,9 +262,11 @@ function create_fragment(ctx) {
 		p(ctx, [dirty]) {
 			if (dirty & /*getRemoveFunction, uploadedFiles*/ 9) {
 				each_value = /*uploadedFiles*/ ctx[0];
+				group_outros();
 				for (let i = 0; i < each_blocks.length; i += 1) each_blocks[i].r();
-				each_blocks = update_keyed_each(each_blocks, dirty, get_key, 1, ctx, each_value, each_1_lookup, t5.parentNode, fix_and_destroy_block, create_each_block, t5, get_each_context);
+				each_blocks = update_keyed_each(each_blocks, dirty, get_key, 1, ctx, each_value, each_1_lookup, t5.parentNode, fix_and_outro_and_destroy_block, create_each_block, t5, get_each_context);
 				for (let i = 0; i < each_blocks.length; i += 1) each_blocks[i].a();
+				check_outros();
 			}
 
 			if (/*uploadedFiles*/ ctx[0].length) {
@@ -251,11 +283,21 @@ function create_fragment(ctx) {
 			}
 		},
 		i(local) {
+			if (current) return;
+
 			for (let i = 0; i < each_value.length; i += 1) {
 				transition_in(each_blocks[i]);
 			}
+
+			current = true;
 		},
-		o: noop,
+		o(local) {
+			for (let i = 0; i < each_blocks.length; i += 1) {
+				transition_out(each_blocks[i]);
+			}
+
+			current = false;
+		},
 		d(detaching) {
 			if (detaching) detach(div);
 			/*div_binding*/ ctx[5](null);

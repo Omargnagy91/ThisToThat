@@ -4,7 +4,7 @@
 
 ## Development
 
-### npm start
+### npm run dev
 
 Runs the app in the development mode.
 Open http://localhost:8080 to view it in the browser.
@@ -12,7 +12,7 @@ Open http://localhost:8080 to view it in the browser.
 The page will reload if you make edits.
 You will also see any lint errors in the console.
 
-### npm test
+### npm run test
 
 Launches the test runner in the interactive watch mode.
 
@@ -20,6 +20,6 @@ Launches the test runner in the interactive watch mode.
 
 Builds a static copy of the site to the `build/` folder.
 
-## TODO:
+### npm run start
 
-**For the best production performance:** Add a build bundler plugin like [@snowpack/plugin-webpack](https://github.com/snowpackjs/snowpack/tree/main/plugins/plugin-webpack) or [snowpack-plugin-rollup-bundle](https://github.com/ParamagicDev/snowpack-plugin-rollup-bundle) to your `snowpack.config.json` config file.
+Runs the production build.

@@ -37,10 +37,10 @@ function create_fragment(ctx) {
 			t0 = text(t0_value);
 			t1 = space();
 			div1 = element("div");
-			div1.textContent = "remove";
-			attr(div0, "class", "file-name-container svelte-1j56woq");
-			attr(div1, "class", "remove-button svelte-1j56woq");
-			attr(div2, "class", "container svelte-1j56woq");
+			attr(h3, "class", "svelte-ualatp");
+			attr(div0, "class", "file-name-container svelte-ualatp");
+			attr(div1, "class", "remove-button svelte-ualatp");
+			attr(div2, "class", "container svelte-ualatp");
 		},
 		m(target, anchor) {
 			insert(target, div2, anchor);

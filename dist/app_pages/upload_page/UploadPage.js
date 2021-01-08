@@ -19,12 +19,10 @@ import {
 	group_outros,
 	init,
 	insert,
-	is_function,
 	listen,
 	mount_component,
 	noop,
 	safe_not_equal,
-	set_data,
 	space,
 	text,
 	transition_in,
@@ -44,27 +42,17 @@ function get_each_context(ctx, list, i) {
 	return child_ctx;
 }
 
-// (92:0) {#each uploadedFiles as file (file.id)}
+// (98:2) {#each uploadedFiles as file (file.id)}
 function create_each_block(key_1, ctx) {
 	let div;
 	let uploadedfilecomponent;
-	let t0;
-	let p;
-	let t1_value = /*file*/ ctx[11].fileName + "";
-	let t1;
-	let t2;
-	let t3_value = /*file*/ ctx[11].fileSize + "";
-	let t3;
-	let t4;
-	let t5;
-	let button;
+	let t;
 	let div_intro;
 	let rect;
 	let stop_animation = noop;
 	let current;
-	let mounted;
-	let dispose;
 	uploadedfilecomponent = new UploadedFileComponent({ props: { videoFile: /*file*/ ctx[11] } });
+	uploadedfilecomponent.$on("remove", /*handleFileRemove*/ ctx[3]);
 
 	return {
 		key: key_1,
@@ -72,45 +60,20 @@ function create_each_block(key_1, ctx) {
 		c() {
 			div = element("div");
 			create_component(uploadedfilecomponent.$$.fragment);
-			t0 = space();
-			p = element("p");
-			t1 = text(t1_value);
-			t2 = text(" [");
-			t3 = text(t3_value);
-			t4 = text("bytes]");
-			t5 = space();
-			button = element("button");
-			button.textContent = "X";
+			t = space();
 			this.first = div;
 		},
 		m(target, anchor) {
 			insert(target, div, anchor);
 			mount_component(uploadedfilecomponent, div, null);
-			append(div, t0);
-			append(div, p);
-			append(p, t1);
-			append(p, t2);
-			append(p, t3);
-			append(p, t4);
-			append(div, t5);
-			append(div, button);
+			append(div, t);
 			current = true;
-
-			if (!mounted) {
-				dispose = listen(button, "click", function () {
-					if (is_function(/*getRemoveFunction*/ ctx[3](/*file*/ ctx[11].id))) /*getRemoveFunction*/ ctx[3](/*file*/ ctx[11].id).apply(this, arguments);
-				});
-
-				mounted = true;
-			}
 		},
 		p(new_ctx, dirty) {
 			ctx = new_ctx;
 			const uploadedfilecomponent_changes = {};
 			if (dirty & /*uploadedFiles*/ 1) uploadedfilecomponent_changes.videoFile = /*file*/ ctx[11];
 			uploadedfilecomponent.$set(uploadedfilecomponent_changes);
-			if ((!current || dirty & /*uploadedFiles*/ 1) && t1_value !== (t1_value = /*file*/ ctx[11].fileName + "")) set_data(t1, t1_value);
-			if ((!current || dirty & /*uploadedFiles*/ 1) && t3_value !== (t3_value = /*file*/ ctx[11].fileSize + "")) set_data(t3, t3_value);
 		},
 		r() {
 			rect = div.getBoundingClientRect();
@@ -143,13 +106,11 @@ function create_each_block(key_1, ctx) {
 		d(detaching) {
 			if (detaching) detach(div);
 			destroy_component(uploadedfilecomponent);
-			mounted = false;
-			dispose();
 		}
 	};
 }
 
-// (99:0) {#if uploadedFiles.length}
+// (104:0) {#if uploadedFiles.length}
 function create_if_block(ctx) {
 	let button;
 	let mounted;
@@ -178,7 +139,7 @@ function create_if_block(ctx) {
 }
 
 function create_fragment(ctx) {
-	let div;
+	let div0;
 	let t0;
 	let input;
 	let t1;
@@ -186,6 +147,7 @@ function create_fragment(ctx) {
 	let t2;
 	let button;
 	let t4;
+	let div1;
 	let each_blocks = [];
 	let each_1_lookup = new Map();
 	let t5;
@@ -206,7 +168,7 @@ function create_fragment(ctx) {
 
 	return {
 		c() {
-			div = element("div");
+			div0 = element("div");
 			t0 = space();
 			input = element("input");
 			t1 = space();
@@ -215,6 +177,7 @@ function create_fragment(ctx) {
 			button = element("button");
 			button.textContent = "click here to upload files.";
 			t4 = space();
+			div1 = element("div");
 
 			for (let i = 0; i < each_blocks.length; i += 1) {
 				each_blocks[i].c();
@@ -223,19 +186,21 @@ function create_fragment(ctx) {
 			t5 = space();
 			if (if_block) if_block.c();
 			if_block_anchor = empty();
-			attr(div, "id", "drop-area");
-			attr(div, "class", "svelte-1shw3uz");
+			attr(div0, "id", "drop-area");
+			attr(div0, "class", "svelte-16o71ic");
 			attr(input, "type", "file");
 			attr(input, "id", "file-selector");
 			input.multiple = true;
 			attr(input, "accept", "video/*");
-			attr(input, "class", "svelte-1shw3uz");
+			attr(input, "class", "svelte-16o71ic");
 			attr(button, "id", "file-button");
-			attr(button, "class", "svelte-1shw3uz");
+			attr(button, "class", "svelte-16o71ic");
+			attr(div1, "id", "file-item-container");
+			attr(div1, "class", "svelte-16o71ic");
 		},
 		m(target, anchor) {
-			insert(target, div, anchor);
-			/*div_binding*/ ctx[5](div);
+			insert(target, div0, anchor);
+			/*div0_binding*/ ctx[5](div0);
 			insert(target, t0, anchor);
 			insert(target, input, anchor);
 			/*input_binding*/ ctx[6](input);
@@ -244,9 +209,10 @@ function create_fragment(ctx) {
 			append(span, t2);
 			append(span, button);
 			insert(target, t4, anchor);
+			insert(target, div1, anchor);
 
 			for (let i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].m(target, anchor);
+				each_blocks[i].m(div1, null);
 			}
 
 			insert(target, t5, anchor);
@@ -260,11 +226,11 @@ function create_fragment(ctx) {
 			}
 		},
 		p(ctx, [dirty]) {
-			if (dirty & /*getRemoveFunction, uploadedFiles*/ 9) {
+			if (dirty & /*uploadedFiles, handleFileRemove*/ 9) {
 				each_value = /*uploadedFiles*/ ctx[0];
 				group_outros();
 				for (let i = 0; i < each_blocks.length; i += 1) each_blocks[i].r();
-				each_blocks = update_keyed_each(each_blocks, dirty, get_key, 1, ctx, each_value, each_1_lookup, t5.parentNode, fix_and_outro_and_destroy_block, create_each_block, t5, get_each_context);
+				each_blocks = update_keyed_each(each_blocks, dirty, get_key, 1, ctx, each_value, each_1_lookup, div1, fix_and_outro_and_destroy_block, create_each_block, null, get_each_context);
 				for (let i = 0; i < each_blocks.length; i += 1) each_blocks[i].a();
 				check_outros();
 			}
@@ -299,17 +265,18 @@ function create_fragment(ctx) {
 			current = false;
 		},
 		d(detaching) {
-			if (detaching) detach(div);
-			/*div_binding*/ ctx[5](null);
+			if (detaching) detach(div0);
+			/*div0_binding*/ ctx[5](null);
 			if (detaching) detach(t0);
 			if (detaching) detach(input);
 			/*input_binding*/ ctx[6](null);
 			if (detaching) detach(t1);
 			if (detaching) detach(span);
 			if (detaching) detach(t4);
+			if (detaching) detach(div1);
 
 			for (let i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].d(detaching);
+				each_blocks[i].d();
 			}
 
 			if (detaching) detach(t5);
@@ -328,8 +295,8 @@ function instance($$self, $$props, $$invalidate) {
 	let dropArea;
 	let fileButton;
 
-	const getRemoveFunction = id => {
-		return () => AppStateStore.removeUploadedFile(id);
+	const handleFileRemove = event => {
+		AppStateStore.removeUploadedFile(event.detail.id);
 	};
 
 	const handleDragOver = event => {
@@ -371,7 +338,7 @@ function instance($$self, $$props, $$invalidate) {
 		AppStateStore.incrementState();
 	};
 
-	function div_binding($$value) {
+	function div0_binding($$value) {
 		binding_callbacks[$$value ? "unshift" : "push"](() => {
 			dropArea = $$value;
 			$$invalidate(1, dropArea);
@@ -395,9 +362,9 @@ function instance($$self, $$props, $$invalidate) {
 		uploadedFiles,
 		dropArea,
 		fileButton,
-		getRemoveFunction,
+		handleFileRemove,
 		proceedToConfiguration,
-		div_binding,
+		div0_binding,
 		input_binding,
 		click_handler
 	];

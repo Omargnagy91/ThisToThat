@@ -12,9 +12,9 @@
   let dropArea: HTMLDivElement;
   let fileButton: HTMLInputElement;
 
-  const getRemoveFunction = (id: number) : () => void => {
-    return () => AppStateStore.removeUploadedFile(id);
-  }
+  const handleFileRemove = (event: CustomEvent<RemoveFileEvent>) => {
+    AppStateStore.removeUploadedFile(event.detail.id);
+  };
 
   const handleDragOver = (event: DragEvent) => {
     event.stopPropagation();
@@ -90,6 +90,11 @@
   #file-button:hover {
     color: #F22B29;
   }
+
+  #file-item-container {
+    display: flex;
+    flex-direction: column;
+  }
 </style>
 
 <div id="drop-area" bind:this={dropArea}></div>
@@ -98,13 +103,13 @@
   Or
   <button id="file-button" on:click={() => fileButton.click()}>click here to upload files.</button>
 </span>
-{#each uploadedFiles as file (file.id)}
-  <div animate:flip in:scale>
-    <UploadedFileComponent videoFile={file}/>
-    <p>{file.fileName} [{file.fileSize}bytes]</p>
-    <button on:click={getRemoveFunction(file.id)}>X</button>
-  </div>
-{/each}
+<div id="file-item-container">
+  {#each uploadedFiles as file (file.id)}
+    <div animate:flip in:scale>
+      <UploadedFileComponent on:remove={handleFileRemove} videoFile={file}/>
+    </div>
+  {/each}
+</div>
 {#if uploadedFiles.length}
 <button on:click={proceedToConfiguration}>NEXT</button>
 {/if}
